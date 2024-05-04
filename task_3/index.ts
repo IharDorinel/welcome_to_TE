@@ -45,3 +45,15 @@ const BALLONS: { [key: string]: BallonI } = {
 };
 
 // Ваш код здесь
+
+const ballonsAmount = async (obj) => {
+	let ballonsArr = Object.values(obj).filter(el => el.isPublic);
+	let total = 0;
+	for(const ballon of ballonsArr) {
+		let amount = await fetchBallonAmount(ballon.id)
+		total += amount
+	}
+	return total
+}
+
+ballonsAmount(BALLONS)

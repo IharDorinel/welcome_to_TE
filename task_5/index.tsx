@@ -22,32 +22,35 @@ const ComponentOne = () => {
     );
 };
 
-const ComponentTwo = () => {
-    const { data } = useSWR('custom_key_2', () => fetchOnePost({ delayMS: 2000 }));
+const ComponentTwo = ({data}) => {
+
     //...some logic
 
-    return data ? (
+    return (
         <div className={styles.card}>
             <h2>{data.title}</h2>
             <p>{data.body}</p>
             <span>ComponentTwo</span>
         </div>
-    ) : (
-        <div>...Loading ComponentTwo</div>
-    );
+    )
 };
 
 export default function Home() {
-    const [showComponentTwo, setShowComponentTwo] = useState(false);
+    const [componentTwoData, setComponentTwoData] = useState(null);
+
+    const loadComponentTwoData = async () => {
+        const data = useSWR('custom_key_2', () => fetchOnePost({ delayMS: 2000 }));
+        setComponentTwoData(data)
+    }
 
     return (
         <main className={styles.main}>
             <div className={styles.description}>
                 <ComponentOne />
-                {showComponentTwo ? (
-                    <ComponentTwo />
+                {componentTwoData ? (
+                    <ComponentTwo data={componentTwoData} />
                 ) : (
-                    <button className={styles.btn} onClick={() => setShowComponentTwo(true)}>
+                    <button className={styles.btn} onClick={() => loadComponentTwoData()}>
                         Show ComponentTwo
                     </button>
                 )}
