@@ -47,13 +47,11 @@ const BALLONS: { [key: string]: BallonI } = {
 // Ваш код здесь
 
 const ballonsAmount = async (obj) => {
-	let ballonsArr = Object.values(obj).filter(el => el.isPublic);
-	let total = 0;
-	for(const ballon of ballonsArr) {
-		let amount = await fetchBallonAmount(ballon.id)
-		total += amount
-	}
-	return total
+	const ballonsArr = Object.values(obj).filter(el => el.isPublic);
+	const promises = ballonsArr.map(el => fetchBallonAmount(el.id))
+	const amount = await Promise.all(promises)
+	return amount.reduce((acc, el) => acc + el, 0)
+
 }
 
 ballonsAmount(BALLONS)

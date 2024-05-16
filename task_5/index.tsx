@@ -22,8 +22,8 @@ const ComponentOne = () => {
     );
 };
 
-const ComponentTwo = ({data}) => {
-
+const ComponentTwo = ({key}) => {
+    const data = useSWR(key, () => fetchOnePost({ delayMS: 2000 }));
     //...some logic
 
     return (
@@ -36,19 +36,19 @@ const ComponentTwo = ({data}) => {
 };
 
 export default function Home() {
-    const [componentTwoData, setComponentTwoData] = useState(null);
+    const [componentTwoKey, setComponentTwoKey] = useState(null);
 
     const loadComponentTwoData = async () => {
-        const data = useSWR('custom_key_2', () => fetchOnePost({ delayMS: 2000 }));
-        setComponentTwoData(data)
+        const key = 'custom_key_2' + Date.now()
+        setComponentTwoKey(key)
     }
 
     return (
         <main className={styles.main}>
             <div className={styles.description}>
                 <ComponentOne />
-                {componentTwoData ? (
-                    <ComponentTwo data={componentTwoData} />
+                {componentTwoKey ? (
+                    <ComponentTwo key={componentTwoKey} />
                 ) : (
                     <button className={styles.btn} onClick={() => loadComponentTwoData()}>
                         Show ComponentTwo
